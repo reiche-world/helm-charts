@@ -1,0 +1,67 @@
+{{- $pullPolicy := ternary "Always" "IfNotPresent" (eq "latest" .Values.tag) }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.id }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.id }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.id }}
+      annotations:
+        redeployTrigger: {{ ternary (now | date "2006-01-02T15:04:05") "none" (eq "latest" .Values.tag) }}
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: {{ .Values.id }}
+          image: "{{ .Values.image }}:{{ .Values.tag }}"
+          imagePullPolicy: {{ $pullPolicy }}
+          resources:
+            limits:
+              memory: {{.Values.resources.memoryLimit | quote }}
+            requests:
+              cpu: {{.Values.resources.cpu | quote }}
+              memory: {{.Values.resources.memory | quote }}
+          {{ if or .Values.service.enabled .Values.ingress.enabled }}
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+          startupProbe:
+            tcpSocket:
+              port: {{ .Values.containerPort }}
+            failureThreshold: 60
+            periodSeconds: 1
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.containerPort }}
+            timeoutSeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          {{ end }}
+          envFrom:
+            {{- range .Values.secretRefs }}
+            - secretRef:
+                name: {{ .name }}
+            {{- end }}
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ .Values.id }}
+            {{- range .Values.configMapRefs }}
+            - configMapRef:
+                name: {{ .name }}
+            {{- end }}
+          volumeMounts:
+            {{- range .Values.configMapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: true
+            {{- end }}
+      volumes:
+        {{- range .Values.configMapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .name }}
+        {{- end }}

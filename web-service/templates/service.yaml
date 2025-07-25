@@ -1,0 +1,18 @@
+{{ if or .Values.service.enabled .Values.ingress.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.id }}
+spec:
+  selector:
+    app: {{ .Release.Name }}-{{ .Values.id }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.port }}
+      targetPort: {{ .Values.containerPort }}
+      name: web
+    {{- if gt (len .Values.service.additionalPorts) 0 }}
+    {{- toYaml .Values.service.additionalPorts | nindent 4 }}
+    {{- end }}
+  type: ClusterIP
+{{ end }}

@@ -1,0 +1,29 @@
+id: "web-server"
+image: "nginx"
+tag: "latest"
+port: 80
+containerPort: 80
+path: /
+resources:
+  cpu: 1m
+  memory: 6Mi
+  memoryLimit: 12Mi
+
+ingress:
+  enabled: false
+
+service:
+  enabled: false
+  additionalPorts: []
+
+secretRefs: []
+configMapRefs: []
+env: {}
+configMapMounts: []
+
+global:
+  ingress:
+    fqdn: "example.com"
+    class: "traefik"
+    certManager:
+      issuer: "letsencrypt"
