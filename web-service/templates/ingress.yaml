@@ -16,7 +16,8 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: |
       {{ .Release.Namespace }}-{{ .Release.Name }}-{{ .Values.id }}-strip-prefix@kubernetescrd,
       default-compression@kubernetescrd,
-      default-ssl-redirect@kubernetescrd
+      default-ssl-redirect@kubernetescrd,
+      default-hsts-headers@kubernetescrd
     cert-manager.io/cluster-issuer: {{ .Values.global.ingress.certManager.issuer }}
 spec:
   ingressClassName: {{ .Values.global.ingress.class }}
