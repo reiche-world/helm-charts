@@ -19,13 +19,13 @@ metadata:
       default-ssl-redirect@kubernetescrd,
       default-hsts-headers@kubernetescrd
   {{- if .Values.global.ingress.certManager.issuer }}
-    cert-manager.io/cluster-issuer: {{ .Values.global.ingress.certManager.issuer }}
+    cert-manager.io/cluster-issuer: "{{ .Values.global.ingress.certManager.issuer }}"
   {{- end }}
 
   {{- if .Values.global.ingress.traefik.certResolver }}
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: true
-    traefik.ingress.kubernetes.io/router.tls.certresolver: {{ .Values.global.ingress.traefik.certResolver }}
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: "{{ .Values.global.ingress.traefik.certResolver }}"
   {{- end }}
 spec:
   ingressClassName: {{ .Values.global.ingress.className }}
