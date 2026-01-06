@@ -18,9 +18,17 @@ metadata:
       default-compression@kubernetescrd,
       default-ssl-redirect@kubernetescrd,
       default-hsts-headers@kubernetescrd
+  {{- if .Values.global.ingress.certManager.issuer }}
     cert-manager.io/cluster-issuer: {{ .Values.global.ingress.certManager.issuer }}
+  {{- end }}
+
+  {{- if .Values.global.ingress.traefik.certResolver }}
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: true
+    traefik.ingress.kubernetes.io/router.tls.certresolver: {{ .Values.global.ingress.traefik.certResolver }}
+  {{- end }}
 spec:
-  ingressClassName: {{ .Values.global.ingress.class }}
+  ingressClassName: {{ .Values.global.ingress.className }}
   rules:
     - host: "{{ .Values.global.ingress.fqdn }}"
       http:
@@ -32,8 +40,10 @@ spec:
                 name: {{ .Release.Name }}-{{ .Values.id }}
                 port:
                   name: web
+  {{- if .Values.global.ingress.certManager.issuer }}
   tls:
     - hosts:
         - "{{ .Values.global.ingress.fqdn }}"
       secretName: {{ .Release.Name }}-{{ .Values.id }}-ingress-cert
+  {{- end}}
 {{ end }}

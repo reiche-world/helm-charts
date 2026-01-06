@@ -24,6 +24,8 @@ configMapMounts: []
 global:
   ingress:
     fqdn: "example.com"
-    class: "traefik"
+    className: "traefik"
     certManager:
-      issuer: "letsencrypt"
+      issuer: ""
+    traefik:
+      certResolver: ""
