@@ -24,7 +24,7 @@ metadata:
 
   {{- if .Values.global.ingress.traefik.certResolver }}
     traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
-    #traefik.ingress.kubernetes.io/router.tls: "false"
+    traefik.ingress.kubernetes.io/router.tls: "false"
     traefik.ingress.kubernetes.io/router.tls.certresolver: "{{ .Values.global.ingress.traefik.certResolver }}"
   {{- end }}
 spec:
