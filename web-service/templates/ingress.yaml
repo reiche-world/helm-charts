@@ -10,7 +10,7 @@ metadata:
       default-compression@kubernetescrd,
       default-ssl-redirect@kubernetescrd,
       default-hsts-headers@kubernetescrd,
-      remove-server-header@kubernetescrd
+      default-remove-server-header@kubernetescrd
   {{- if .Values.global.ingress.certManager.issuer }}
     cert-manager.io/cluster-issuer: "{{ .Values.global.ingress.certManager.issuer }}"
   {{- end }}
