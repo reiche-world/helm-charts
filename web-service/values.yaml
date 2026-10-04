@@ -21,6 +21,21 @@ configMapRefs: []
 env: {}
 configMapMounts: []
 
+security:
+  permissionPolicy: "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  contentSecurityPolicy: >-
+    default-src 'self';
+    script-src 'self';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https:;
+    font-src 'self' data:;
+    connect-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    frame-ancestors 'self';
+    form-action 'self';
+  crossOriginEmbedderPolicy: "require-corp"
+
 global:
   ingress:
     fqdn: "example.com"

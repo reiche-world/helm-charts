@@ -1,0 +1,12 @@
+{{ if .Values.ingress.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .Release.Name }}-security-headers
+spec:
+  headers:
+    customResponseHeaders:
+      Permissions-Policy: {{ .Values.security.permissionPolicy | quote }}
+      Content-Security-Policy: {{ .Values.security.contentSecurityPolicy | quote }}
+      Cross-Origin-Embedder-Policy: {{ .Values.security.crossOriginEmbedderPolicy | quote }}
+{{ end }}
