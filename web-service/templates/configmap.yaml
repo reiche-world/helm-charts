@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.id }}
+  name: {{ include "web-service.fullname" . }}
   annotations:
     reloader.stakater.com/match: "true"
 data:

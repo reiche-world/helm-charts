@@ -2,11 +2,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.id }}
+  name: {{ include "web-service.fullname" . }}
   annotations:
     traefik.ingress.kubernetes.io/router.middlewares: |
-      {{ .Release.Namespace }}-{{ .Release.Name }}-strip-prefix@kubernetescrd,
-      {{ .Release.Namespace }}-{{ .Release.Name }}-security-headers@kubernetescrd,
+      {{ include "web-service.fullname" . }}-strip-prefix@kubernetescrd,
+      {{ include "web-service.fullname" . }}-security-headers@kubernetescrd,
       default-compression@kubernetescrd,
       default-ssl-redirect@kubernetescrd,
       default-hsts-headers@kubernetescrd,
@@ -30,13 +30,13 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ .Release.Name }}-{{ .Values.id }}
+                name: {{ include "web-service.fullname" . }}
                 port:
                   name: web
   {{- if .Values.global.ingress.certManager.issuer }}
   tls:
     - hosts:
         - "{{ .Values.global.ingress.fqdn }}"
-      secretName: {{ .Release.Name }}-{{ .Values.id }}-ingress-cert
+      secretName: {{ include "web-service.fullname" . }}-ingress-cert
   {{- end}}
 {{ end }}

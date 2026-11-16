@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.id }}
+  name: {{ include "web-service.fullname" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-{{ .Values.id }}
+      app: {{ include "web-service.fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-{{ .Values.id }}
+        app: {{ include "web-service.fullname" . }}
       annotations:
         redeployTrigger: {{ ternary (now | date "2006-01-02T15:04:05") "none" (eq "latest" .Values.tag) }}
     spec:
@@ -48,7 +48,7 @@ spec:
                 name: {{ .name }}
             {{- end }}
             - configMapRef:
-                name: {{ .Release.Name }}-{{ .Values.id }}
+                name: {{ include "web-service.fullname" . }}
             {{- range .Values.configMapRefs }}
             - configMapRef:
                 name: {{ .name }}
