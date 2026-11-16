@@ -5,8 +5,8 @@ metadata:
   name: {{ include "web-service.fullname" . }}
   annotations:
     traefik.ingress.kubernetes.io/router.middlewares: |
-      {{ include "web-service.fullname" . }}-strip-prefix@kubernetescrd,
-      {{ include "web-service.fullname" . }}-security-headers@kubernetescrd,
+      {{ .Release.Namespace }}-{{ include "web-service.fullname" . }}-strip-prefix@kubernetescrd,
+      {{ .Release.Namespace }}-{{ include "web-service.fullname" . }}-security-headers@kubernetescrd,
       default-compression@kubernetescrd,
       default-ssl-redirect@kubernetescrd,
       default-hsts-headers@kubernetescrd,
