@@ -1,4 +1,4 @@
-{{- $pullPolicy := ternary "Always" "IfNotPresent" (eq "latest" .Values.tag) }}
+{{- $pullPolicy := ternary "Always" "IfNotPresent" (eq "latest" .Values.image.tag) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,30 +13,28 @@ spec:
       labels:
         app: {{ include "web-service.fullname" . }}
       annotations:
-        redeployTrigger: {{ ternary (now | date "2006-01-02T15:04:05") "none" (eq "latest" .Values.tag) }}
+        redeployTrigger: {{ ternary (now | date "2006-01-02T15:04:05") "none" (eq "latest" .Values.image.tag) }}
     spec:
       enableServiceLinks: false
       containers:
-        - name: {{ .Values.id }}
-          image: "{{ .Values.image }}:{{ .Values.tag }}"
+        - name: {{ include "web-service.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ $pullPolicy }}
+          {{ with .Values.resources }}
           resources:
-            limits:
-              memory: {{.Values.resources.memoryLimit | quote }}
-            requests:
-              cpu: {{.Values.resources.cpu | quote }}
-              memory: {{.Values.resources.memory | quote }}
-          {{ if or .Values.service.enabled .Values.ingress.enabled }}
+            {{ toYaml . | nindent 12}}
+          {{ end }}
+          {{ if or .Values.service.enabled }}
           ports:
-            - containerPort: {{ .Values.containerPort }}
+            - containerPort: {{ .Values.service.containerPort }}
           startupProbe:
             tcpSocket:
-              port: {{ .Values.containerPort }}
+              port: {{ .Values.service.containerPort }}
             failureThreshold: 60
             periodSeconds: 1
           livenessProbe:
             tcpSocket:
-              port: {{ .Values.containerPort }}
+              port: {{ .Values.service.containerPort }}
             timeoutSeconds: 3
             periodSeconds: 10
             successThreshold: 1

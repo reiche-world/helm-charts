@@ -1,19 +1,22 @@
-id: "web-server"
-image: "nginx"
-tag: "latest"
-port: 80
-containerPort: 80
-path: /
+image:
+  repository: "nginx"
+  tag: "latest"
+
 resources:
-  cpu: 1m
-  memory: 6Mi
-  memoryLimit: 12Mi
+  requests:
+    cpu: 1m
+    memory: 6Mi
+  limits:
+    memory: 12Mi
 
 ingress:
   enabled: false
+  path: /
 
 service:
   enabled: false
+  port: 80
+  containerPort: 80
   additionalPorts: []
 
 secretRefs: []

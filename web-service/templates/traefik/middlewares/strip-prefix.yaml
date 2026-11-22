@@ -6,5 +6,5 @@ metadata:
 spec:
   stripPrefix:
     prefixes:
-      - {{ .Values.path }}
+      - {{ .Values.ingress.path }}
 {{ end }}
